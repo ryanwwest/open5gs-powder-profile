@@ -55,7 +55,7 @@ sim_ran = request.RawPC("sim-ran")
 sim_ran.component_manager_id = GLOBALS.SITE_URN
 sim_ran.disk_image = GLOBALS.UBUNTU18_IMG
 sim_ran.hardware_type = params.phystype 
-#sim_ran.addService(rspec.Execute(shell="bash", command=invoke_script_str("ran.sh")))
+sim_ran.addService(rspec.Execute(shell="bash", command=invoke_script_str("ran.sh")))
 gNBCoreLink.addNode(sim_ran)
 
 # Add node that will host the 5G Core Virtual Network Functions (AMF, SMF, UPF, etc).
@@ -63,7 +63,7 @@ open5gs = request.RawPC("open5gs")
 open5gs.component_manager_id = GLOBALS.SITE_URN
 open5gs.disk_image = GLOBALS.UBUNTU18_IMG
 open5gs.hardware_type = GLOBALS.HWTYPE if params.phystype != "" else params.phystype
-#open5gs.addService(rspec.Execute(shell="bash", command=invoke_script_str("free5gc.sh")))
+open5gs.addService(rspec.Execute(shell="bash", command=invoke_script_str("open5gs.sh")))
 gNBCoreLink.addNode(open5gs)
 
 pc.printRequestRSpec(request)
