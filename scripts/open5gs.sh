@@ -1,3 +1,4 @@
+# this script should be run as root
 # print every command
 set -x
 
@@ -17,4 +18,22 @@ apt -y install nodejs
 curl -sL https://open5gs.org/open5gs/assets/webui/install | bash -
 #curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 #curl -sL https://open5gs.org/open5gs/assets/webui/install | sudo -E bash -
+
+
+echo "Setup 4G/ 5G NSA Core"
+
+cp /local/repository/config/mme.yaml /ect/open5gs/mme.yaml
+cp /local/repository/config/sgwu.yaml /ect/open5gs/sgwu.yaml
+
+systemctl restart open5gs-mmed
+systemctl restart open5gs-sgwud
+
+echo "Setup 5G Core"
+
+cp /local/repository/config/amf.yaml /ect/open5gs/amf.yaml
+cp /local/repository/config/upf.yaml /ect/open5gs/upf.yaml
+
+systemctl restart open5gs-amfd
+systemctl restart open5gs-upfd
+
 
