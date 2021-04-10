@@ -2,6 +2,15 @@
 # print every command
 set -x
 
+### Enable IPv4/IPv6 Forwarding
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo sysctl -w net.ipv6.conf.all.forwarding=1
+
+### Add NAT Rule
+# Probably need to change these values?
+sudo iptables -t nat -A POSTROUTING -s 10.45.0.0/16 ! -o ogstun -j MASQUERADE
+sudo ip6tables -t nat -A POSTROUTING -s 2001:230:cafe::/48 ! -o ogstun -j MASQUERADE
+
 
 # install open5gs
 apt -y update
@@ -22,18 +31,17 @@ curl -sL https://open5gs.org/open5gs/assets/webui/install | bash -
 
 echo "Setup 4G/ 5G NSA Core"
 
-cp /local/repository/config/mme.yaml /ect/open5gs/mme.yaml
-cp /local/repository/config/sgwu.yaml /ect/open5gs/sgwu.yaml
+cp /local/repository/config/mme.yaml /etc/open5gs/mme.yaml
+cp /local/repository/config/sgwu.yaml /etc/open5gs/sgwu.yaml
 
 systemctl restart open5gs-mmed
 systemctl restart open5gs-sgwud
 
 echo "Setup 5G Core"
 
-cp /local/repository/config/amf.yaml /ect/open5gs/amf.yaml
-cp /local/repository/config/upf.yaml /ect/open5gs/upf.yaml
+cp /local/repository/config/amf.yaml /etc/open5gs/amf.yaml
+cp /local/repository/config/upf.yaml /etc/open5gs/upf.yaml
 
 systemctl restart open5gs-amfd
 systemctl restart open5gs-upfd
-
 
