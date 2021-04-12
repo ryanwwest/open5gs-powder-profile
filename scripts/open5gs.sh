@@ -1,10 +1,16 @@
-# this script should be run as root
+#n this script should be run as root
 # print every command
 set -x
 
 ### Enable IPv4/IPv6 Forwarding
-sudo sysctl -w net.ipv4.ip_forward=1
-sudo sysctl -w net.ipv6.conf.all.forwarding=1
+sysctl -w net.ipv4.ip_forward=1
+sysctl -w net.ipv6.conf.all.forwarding=1
+sysctl -w net.ipv4.ip_nonlocal_bind=1
+#echo "net.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf
+#sysctl -p /etc/sysctl.conf
+
+# disable kernel sctp for now
+modprobe -rf sctp
 
 ### Add NAT Rule
 # Probably need to change these values?
@@ -42,8 +48,6 @@ echo "Setup 5G Core"
 cp /local/repository/config/amf.yaml /etc/open5gs/amf.yaml
 cp /local/repository/config/upf.yaml /etc/open5gs/upf.yaml
 
-echo "\nnet.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf
-sysctl -p /etc/sysctl.conf
 
 systemctl restart open5gs-amfd
 systemctl restart open5gs-upfd
