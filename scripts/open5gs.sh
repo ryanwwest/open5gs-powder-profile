@@ -42,6 +42,9 @@ echo "Setup 5G Core"
 cp /local/repository/config/amf.yaml /etc/open5gs/amf.yaml
 cp /local/repository/config/upf.yaml /etc/open5gs/upf.yaml
 
+echo "\nnet.ipv4.ip_nonlocal_bind = 1" >> /etc/sysctl.conf
+sysctl -p /etc/sysctl.conf
+
 systemctl restart open5gs-amfd
 systemctl restart open5gs-upfd
 
