@@ -209,6 +209,7 @@ mme:
     freeDiameter: /etc/freeDiameter/mme.conf
     s1ap:
       - addr: 10.10.1.1
+        dev: enp134s0f1
     gtpc:
       - addr: 127.0.0.2
     gummei: 

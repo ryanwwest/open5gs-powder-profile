@@ -52,3 +52,7 @@ cp /local/repository/config/upf.yaml /etc/open5gs/upf.yaml
 systemctl restart open5gs-amfd
 systemctl restart open5gs-upfd
 
+# clone open5gs for dbctl script
+git clone https://github.com/open5gs/open5gs
+
+# auto add a UE subscriber to udm (TODO)
