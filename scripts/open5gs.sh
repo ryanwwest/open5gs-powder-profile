@@ -48,11 +48,18 @@ echo "Setup 5G Core"
 cp /local/repository/config/amf.yaml /etc/open5gs/amf.yaml
 cp /local/repository/config/upf.yaml /etc/open5gs/upf.yaml
 
+# amf.yaml is templated at one spot where the dev interface is, since this changes between
+# POWDER builds. For now, do an easy variable injection with sed. If there grows to be
+# lots of templating we may want a more concrete solution.
+localiface=$(route | grep 10.10.1.0 | grep -o '[^ ]*$')
+sed -i "s/{{local-interface}}/$localiface/g" /etc/open5gs/amf.yaml
 
 systemctl restart open5gs-amfd
 systemctl restart open5gs-upfd
 
 # clone open5gs for dbctl script
+cd /root
 git clone https://github.com/open5gs/open5gs
-
-# auto add a UE subscriber to udm (TODO)
+cd open5gs/misc/db
+# add default ue subscriber so user doesn't have to log into web ui
+./open5gs-dbctl add 901700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E428
