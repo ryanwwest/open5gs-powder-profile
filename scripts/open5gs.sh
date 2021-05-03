@@ -62,4 +62,4 @@ cd /root
 git clone https://github.com/open5gs/open5gs
 cd open5gs/misc/db
 # add default ue subscriber so user doesn't have to log into web ui
-./open5gs-dbctl add 901700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E428
+./open5gs-dbctl add 901700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA

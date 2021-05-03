@@ -181,7 +181,7 @@ amf:
         port: 7777
     ngap:
       - addr: 10.10.1.1
-	dev: enp134s0f1
+        dev: {{local-interface}}
     guami:
       - plmn_id:
           mcc: 901
