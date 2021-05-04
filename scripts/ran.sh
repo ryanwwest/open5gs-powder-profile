@@ -37,7 +37,7 @@ replace_in_file() {
     sed -i "s/$1/$2/g" $3
 }
 
-cd ~/UERANSIM/config/open5gs-ues
+cd ~/UERANSIM/config/open5gs-ue
 for i in {0..9}; do
     file=ue"$i.yaml"
     defaultkey="465B5CE8B199B49FAA5F0A2EE238A6BC"
