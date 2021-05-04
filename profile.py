@@ -1,5 +1,13 @@
 #!/usr/bin/env python
 
+#
+# Standard geni-lib/portal libraries
+#
+import geni.portal as portal
+import geni.rspec.pg as rspec
+import geni.rspec.emulab as elab
+import geni.rspec.igext as IG
+
 tourDescription = """
 This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
 
@@ -16,14 +24,6 @@ To set up the default UE and get internet access through it, do the following:
 4. The previous step also creates a new linux interface `uesimtun0`, which you can now use to access the internet through the 5G core. For example, you can run `ping -I uesimtun0 google.com` to see data being sent and received.
 
 """
-
-#
-# Standard geni-lib/portal libraries
-#
-import geni.portal as portal
-import geni.rspec.pg as rspec
-import geni.rspec.emulab as elab
-import geni.rspec.igext as IG
 
 #
 # Globals
@@ -84,5 +84,11 @@ open5gs.disk_image = GLOBALS.UBUNTU18_IMG
 open5gs.hardware_type = GLOBALS.HWTYPE if params.phystype != "" else params.phystype
 open5gs.addService(rspec.Execute(shell="bash", command=invoke_script_str("open5gs.sh")))
 gNBCoreLink.addNode(open5gs)
+
+tour = IG.Tour()
+tour.Description(IG.Tour.MARKDOWN, tourDescription)
+tour.Instructions(IG.Tour.MARKDOWN, tourInstructions)
+request.addTour(tour)
+
 
 pc.printRequestRSpec(request)
