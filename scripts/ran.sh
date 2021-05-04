@@ -43,7 +43,7 @@ for i in {0..9}; do
     defaultkey="465B5CE8B199B49FAA5F0A2EE238A6BC"
     newkey=$(printf "%0.s$i" {1..32})
     cp ue1.yaml $file
-    replace_in_file $defaultkey 
+    replace_in_file $defaultkey $newkey $file
 done
 
 
