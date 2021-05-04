@@ -1,9 +1,12 @@
 #!/usr/bin/env python
-"""
+
+tourDescription = """
 This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
 
 The profile is known to work with UERANSIM v3.1.8 and Open5GS v2.2.7 (as of 5/3/2021). However, the profile downloads and builds the latest versions by default, so breaking changes could occur.
+"""
 
+tourInstructions = """
 To set up the default UE and get internet access through it, do the following:
 
 1. Wait until after the startup scripts have finished (in the POWDER experiment list view, the startup column for each node should say 'Finished'). 
