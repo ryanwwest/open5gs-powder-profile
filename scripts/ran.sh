@@ -30,7 +30,7 @@ echo "4. Change configs"
 cp /local/repository/config/ueran-profile.yaml ~/UERANSIM/config/profile.yaml
 cp /local/repository/config/ueran-gnb.yaml ~/UERANSIM/config/open5gs-gnb.yaml
 mkdir ~/UERANSIM/config/open5gs-ue
-cp /local/repository/config/ueran-ue.yaml ~/UERANSIM/config/open5gs-ues/ue1.yaml
+cp /local/repository/config/ueran-ue.yaml ~/UERANSIM/config/open5gs-ue/ue1.yaml
 
 replace_in_file() {
     # $1 is string to find, $2 is string to replace, $3 is filename
