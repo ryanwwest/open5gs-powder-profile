@@ -29,7 +29,23 @@ git clone https://github.com/aligungr/UERANSIM.git
 echo "4. Change configs"
 cp /local/repository/config/ueran-profile.yaml ~/UERANSIM/config/profile.yaml
 cp /local/repository/config/ueran-gnb.yaml ~/UERANSIM/config/open5gs-gnb.yaml
-cp /local/repository/config/ueran-ue.yaml ~/UERANSIM/config/open5gs-ue.yaml
+mkdir ~/UERANSIM/config/open5gs-ue
+cp /local/repository/config/ueran-ue.yaml ~/UERANSIM/config/open5gs-ues/ue1.yaml
+
+replace_in_file() {
+    # $1 is string to find, $2 is string to replace, $3 is filename
+    sed -i "s/$1/$2/g" $3
+}
+
+cd ~/UERANSIM/config/open5gs-ues
+for i in {0..9}; do
+    file=ue"$i.yaml"
+    defaultkey="465B5CE8B199B49FAA5F0A2EE238A6BC"
+    newkey=$(printf "%0.s$i" {1..32})
+    cp ue1.yaml $file
+    replace_in_file $defaultkey 
+done
+
 
 echo "4.Build UERANSIM"
 cd ~/UERANSIM

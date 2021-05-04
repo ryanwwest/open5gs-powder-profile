@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #n this script should be run as root
 # print every command
 set -x
@@ -48,11 +50,16 @@ echo "Setup 5G Core"
 cp /local/repository/config/amf.yaml /etc/open5gs/amf.yaml
 cp /local/repository/config/upf.yaml /etc/open5gs/upf.yaml
 
+replace_in_file() {
+    # $1 is string to find, $2 is string to replace, $3 is filename
+    sed -i "s/$1/$2/g" $3
+}
+
 # amf.yaml is templated at one spot where the dev interface is, since this changes between
 # POWDER builds. For now, do an easy variable injection with sed. If there grows to be
 # lots of templating we may want a more concrete solution.
 localiface=$(route | grep 10.10.1.0 | grep -o '[^ ]*$')
-sed -i "s/{{local-interface}}/$localiface/g" /etc/open5gs/amf.yaml
+replace_in_file {{local-interface}} $localiface /etc/open5gs/amf.yaml
 
 systemctl restart open5gs-amfd
 systemctl restart open5gs-upfd
@@ -61,5 +68,10 @@ systemctl restart open5gs-upfd
 cd /root
 git clone https://github.com/open5gs/open5gs
 cd open5gs/misc/db
+
 # add default ue subscriber so user doesn't have to log into web ui
-./open5gs-dbctl add 901700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA
+opc="E8ED289DEBA952E4283B54E88E6183CA"
+for i in {0..9}; do                             
+    newkey=$(printf "%0.s$i" {1..32}) # example: 33333333333333333333333333333333
+    echo ./open5gs-dbctl add 90170000000000$i $newkey $opc
+done                                              
