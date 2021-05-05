@@ -1,18 +1,4 @@
 #!/usr/bin/env python
-"""
-This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
-
-The profile is known to work with UERANSIM v3.1.8 and Open5GS v2.2.7 (as of 5/3/2021). However, the profile downloads and builds the latest versions by default, so breaking changes could occur.
-
-To set up the default UE and get internet access through it, do the following:
-
-1. Wait until after the startup scripts have finished (in the POWDER experiment list view, the startup column for each node should say 'Finished'). 
-2. Open up three terminals and ssh into the sim-ran box in all three, then run `sudo su && cd /root/UERANSIM` in each.
-3. In the first window, run `run build/nr-gnb -c config/open5gs-gnb.yaml` to start the gNB. It should log a successful connection to the 5G core.
-4. In the second window, run `build/nr-ue -c config/open5gs-ue.yaml` to connect the simulated UE to the gNB. It should log a successful connection, successful registration with the 5G core, and a PDU session message indicating the device is ready to communicate in the user plane. 
-4. The previous step also creates a new linux interface `uesimtun0`, which you can now use to access the internet through the 5G core. For example, you can run `ping -I uesimtun0 google.com` to see data being sent and received.
-
-"""
 
 #
 # Standard geni-lib/portal libraries
@@ -21,6 +7,24 @@ import geni.portal as portal
 import geni.rspec.pg as rspec
 import geni.rspec.emulab as elab
 import geni.rspec.igext as IG
+
+tourDescription = """
+This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
+
+The profile is known to work with UERANSIM v3.1.8 and Open5GS v2.2.7 (as of 5/3/2021). However, the profile downloads and builds the latest versions by default, so breaking changes could occur.
+"""
+
+tourInstructions = """
+To set up the default UE and get internet access through it, do the following:
+
+1. Wait until after the startup scripts have finished (in the POWDER experiment list view, the startup column for each node should say 'Finished'). This may take 30+ minutes.
+2. Open up three terminals and ssh into the sim-ran box in all three, then run `sudo su && cd /root/UERANSIM` in each. Because UERANSIM creates tunnel network interfaces for UE PDU sessions, root access is required.
+3. In the first window, run `build/nr-gnb -c config/open5gs-gnb.yaml` to start the gNB. It should log a successful connection to the 5G core.
+4. In the second window, run `build/nr-ue -c config/open5gs-ue.yaml` to connect the simulated UE to the gNB. It should log a successful connection, successful registration with the 5G core, and a PDU session message indicating the device is ready to communicate in the user plane. 
+4. The previous step also creates a new linux interface `uesimtun0`, which you can now use to access the internet through the 5G core. For example, you can run `ping -I uesimtun0 google.com` to see data being sent and received.
+
+Refer to https://open5gs.org/open5gs/docs/guide/01-quickstart/ to learn how to modify the system, such as registering new UE subscribers in the core or modifying 5G network function configuration.
+"""
 
 #
 # Globals
@@ -81,5 +85,11 @@ open5gs.disk_image = GLOBALS.UBUNTU18_IMG
 open5gs.hardware_type = GLOBALS.HWTYPE if params.phystype != "" else params.phystype
 open5gs.addService(rspec.Execute(shell="bash", command=invoke_script_str("open5gs.sh")))
 gNBCoreLink.addNode(open5gs)
+
+tour = IG.Tour()
+tour.Description(IG.Tour.MARKDOWN, tourDescription)
+tour.Instructions(IG.Tour.MARKDOWN, tourInstructions)
+request.addTour(tour)
+
 
 pc.printRequestRSpec(request)
