@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 # load configs
 source /local/repository/scripts/setup-config
