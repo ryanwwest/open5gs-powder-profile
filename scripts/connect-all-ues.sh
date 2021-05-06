@@ -10,7 +10,8 @@ pkill -f nr-ue
 cd /root/UERANSIM
 logdir=uelog
 mkdir -p $logdir
-for i in {0..$(($NUM_UE_ - 1))}; do
+upper=$(($NUM_UE_ - 1))
+for i in $(seq 0 $upper); do
     file=ue"$i.yaml"                             
     build/nr-ue -c config/open5gs-ue/ue$i.yaml > $logdir/ue$i.log 2>&1 &
     echo started ue$i
@@ -19,7 +20,8 @@ done
 sleep 1
 
 # for each ue, check for connectivity
-for i in {0..$(($NUM_UE_ - 1))}; do
+upper=$(($NUM_UE_ - 1))
+for i in $(seq 0 $upper); do
     iface=$(grep 'Connection setup for PDU session' $logdir/ue$i.log | grep -Eo 'uesimtun[0-9]*')
     if [[ $iface == "" ]]; then
         echo "No PDU session interface found for ue$i"
