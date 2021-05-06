@@ -9,14 +9,14 @@ import geni.rspec.emulab as elab
 import geni.rspec.igext as IG
 
 tourDescription = """
-This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
+This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and specified number of User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
 
 The profile is known to work with UERANSIM v3.1.8 and Open5GS v2.2.7 (as of 5/3/2021). However, the profile downloads and builds the latest versions by default, so breaking changes could occur.
 
-This version of the profile creates 10 UEs and registers them all in the 5G core UDM (MongoDB). See instructions for more details."""
+"""
 
 tourInstructions = """
-To set up the default UE and get internet access through it, do the following:
+To set up the default UE (or UEs, if you changed the parameter) and get internet access through it, do the following:
 
 1. Wait until after the startup scripts have finished (in the POWDER experiment list view, the startup column for each node should say 'Finished'). This may take 30+ minutes.
 2. Open up three terminals and ssh into the sim-ran box in all three, then run `sudo su && cd /root/UERANSIM` in each. Because UERANSIM creates tunnel network interfaces for UE PDU sessions, root access is required.
@@ -26,7 +26,7 @@ To set up the default UE and get internet access through it, do the following:
 
 Refer to https://open5gs.org/open5gs/docs/guide/01-quickstart/ to learn how to modify the system, such as registering new UE subscribers in the core or modifying 5G network function configuration.
 
-There is a script at `/local/repository/scripts/connect-all-ues.sh` that can be run on sim-ran node to start and create PDU sessions (and therefore interfaces) for all 10 UEs at once, as well as test them all for internet connectivity.                        
+There is a script at `/local/repository/scripts/connect-all-ues.sh` that can be run on sim-ran node to start and create PDU sessions (and therefore interfaces) for all generated UEs at once, which also tests them for internet connectivity.                        
 
 """
 
