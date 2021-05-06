@@ -40,11 +40,15 @@ class GLOBALS(object):
     # default type
     HWTYPE = "d430"
     SCRIPT_DIR = "/local/repository/scripts/"
+    SCRIPT_CONFIG = "setup-config"
 
 
 def invoke_script_str(filename):
-    # redirection all output to /script_output
-    return "sudo bash " + GLOBALS.SCRIPT_DIR + filename + " &> ~/5g_install_script_output"
+    # populate script config before running scripts (replace '?'s)
+    populate_config = f"sed -i "" 's/NUM_UE_=?/NUM_UE_={params.uenum}' " + SCRIPT_DIR + SCRIPT_CONFIG
+    # also redirect all output to /script_output
+    run_script = "sudo bash " + GLOBALS.SCRIPT_DIR + filename + " &> ~/install_script_output"
+    return populate_config + " && " + run_script
 
 #
 # This geni-lib script is designed to run in the PhantomNet Portal.
@@ -63,13 +67,16 @@ pc.defineParameter("phystype",  "Optional physical node type",
                    longDescription="Specify a physical node type (d430,d740,pc3000,d710,etc) " +
                    "instead of letting the resource mapper choose for you.")
 
+pc.defineParameter("uenum","Number of simulated UEs to generate and register",
+                   portal.ParameterType.INTEGER, 1, min=0, max=10)
+
+
 # Retrieve the values the user specifies during instantiation.
 params = pc.bindParameters()
 pc.verifyParameters()
 
 
 
-# Create the link between the `sim-gnb` and `5GC` nodes.
 gNBCoreLink = request.Link("gNBCoreLink")
 
 # Add node which will run gNodeB and UE components with a simulated RAN.

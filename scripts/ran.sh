@@ -5,6 +5,9 @@
 # Any subsequent(*) commands which fail will cause the shell script to exit immediately
 set -e
 
+# load config values
+source /local/repository/scripts/setup-config
+
 # automate grub prompt during installation
 echo "SET grub-pc/install_devices /dev/sda" | sudo debconf-communicate
 
@@ -39,7 +42,7 @@ replace_in_file() {
 
 cd ~/UERANSIM/config/open5gs-ue
 # autogenerate config files for each ue
-for i in {0..9}; do
+for i in {0..$(($NUM_UE_ - 1))}; do
     file=ue"$i.yaml"
     defaultkey="465B5CE8B199B49FAA5F0A2EE238A6BC"
     newkey=$(printf "%0.s$i" {1..32})
