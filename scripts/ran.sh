@@ -42,6 +42,7 @@ replace_in_file() {
 
 cd ~/UERANSIM/config/open5gs-ue
 # autogenerate config files for each ue
+upper=$(($NUM_UE_ - 1))
 for i in $(seq 0 $upper); do
     file=ue"$i.yaml"
     defaultkey="465B5CE8B199B49FAA5F0A2EE238A6BC"
