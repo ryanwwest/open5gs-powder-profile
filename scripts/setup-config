@@ -3,7 +3,7 @@
 NUM_UE_=?
 
 # this is a temporary setback based on how UEs configs are generated. It can be removed with more scripting work
-if [[ NUM_UE > 10 ]];
+if [[ NUM_UE > 10 ]] then
     echo "Maximum number of UEs is 10"
     exit -1
 fi 
