@@ -9,13 +9,14 @@ import geni.rspec.emulab as elab
 import geni.rspec.igext as IG
 
 tourDescription = """
-This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
+This profile creates a 5G core via [Open5GS](https://github.com/open5gs/open5gs) and connects it to a simulated gNB Base Station and specified number of User Equipment (UE) via [UERANSIM](https://github.com/aligungr/UERANSIM). Everything is set up automatically to be able to connect a single UE to the netwowrk with IMSI 901700000000001.
 
 The profile is known to work with UERANSIM v3.1.8 and Open5GS v2.2.7 (as of 5/3/2021). However, the profile downloads and builds the latest versions by default, so breaking changes could occur.
+
 """
 
 tourInstructions = """
-To set up the default UE and get internet access through it, do the following:
+To set up the default UE (or UEs, if you changed the parameter) and get internet access through it, do the following:
 
 1. Wait until after the startup scripts have finished (in the POWDER experiment list view, the startup column for each node should say 'Finished'). This may take 30+ minutes.
 2. Open up three terminals and ssh into the sim-ran box in all three, then run `sudo su && cd /root/UERANSIM` in each. Because UERANSIM creates tunnel network interfaces for UE PDU sessions, root access is required.
@@ -24,6 +25,9 @@ To set up the default UE and get internet access through it, do the following:
 4. The previous step also creates a new linux interface `uesimtun0`, which you can now use to access the internet through the 5G core. For example, you can run `ping -I uesimtun0 google.com` to see data being sent and received.
 
 Refer to https://open5gs.org/open5gs/docs/guide/01-quickstart/ to learn how to modify the system, such as registering new UE subscribers in the core or modifying 5G network function configuration.
+
+There is a script at `/local/repository/scripts/connect-all-ues.sh` that can be run on sim-ran node to start and create PDU sessions (and therefore interfaces) for all generated UEs at once, which also tests them for internet connectivity.                        
+
 """
 
 #
@@ -36,11 +40,15 @@ class GLOBALS(object):
     # default type
     HWTYPE = "d430"
     SCRIPT_DIR = "/local/repository/scripts/"
+    SCRIPT_CONFIG = "setup-config"
 
 
 def invoke_script_str(filename):
-    # redirection all output to /script_output
-    return "sudo bash " + GLOBALS.SCRIPT_DIR + filename + " &> ~/5g_install_script_output"
+    # populate script config before running scripts (replace '?'s)
+    populate_config = "sed -i 's/NUM_UE_=?/NUM_UE_=" + str(params.uenum) + "/' " + GLOBALS.SCRIPT_DIR+GLOBALS.SCRIPT_CONFIG
+    # also redirect all output to /script_output
+    run_script = "sudo bash " + GLOBALS.SCRIPT_DIR + filename + " &> ~/install_script_output"
+    return populate_config + " && " + run_script
 
 #
 # This geni-lib script is designed to run in the PhantomNet Portal.
@@ -59,13 +67,16 @@ pc.defineParameter("phystype",  "Optional physical node type",
                    longDescription="Specify a physical node type (d430,d740,pc3000,d710,etc) " +
                    "instead of letting the resource mapper choose for you.")
 
+pc.defineParameter("uenum","Number of simulated UEs to generate and register (0-10)",
+                   portal.ParameterType.INTEGER, 1, min=0, max=10)
+
+
 # Retrieve the values the user specifies during instantiation.
 params = pc.bindParameters()
 pc.verifyParameters()
 
 
 
-# Create the link between the `sim-gnb` and `5GC` nodes.
 gNBCoreLink = request.Link("gNBCoreLink")
 
 # Add node which will run gNodeB and UE components with a simulated RAN.
