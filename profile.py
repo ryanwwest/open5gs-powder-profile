@@ -67,7 +67,7 @@ pc.defineParameter("phystype",  "Optional physical node type",
                    longDescription="Specify a physical node type (d430,d740,pc3000,d710,etc) " +
                    "instead of letting the resource mapper choose for you.")
 
-pc.defineParameter("uenum","Number of simulated UEs to generate and register",
+pc.defineParameter("uenum","Number of simulated UEs to generate and register (0-10)",
                    portal.ParameterType.INTEGER, 1, min=0, max=10)
 
 
