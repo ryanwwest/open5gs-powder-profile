@@ -45,7 +45,7 @@ class GLOBALS(object):
 
 def invoke_script_str(filename):
     # populate script config before running scripts (replace '?'s)
-    populate_config = "sed -i '' 's/NUM_UE_=?/NUM_UE_=" + str(params.uenum) + "' " + SCRIPT_DIR+SCRIPT_CONFIG
+    populate_config = "sed -i '' 's/NUM_UE_=?/NUM_UE_=" + str(params.uenum) + "' " + GLOBALS.SCRIPT_DIR+GLOBALS.SCRIPT_CONFIG
     # also redirect all output to /script_output
     run_script = "sudo bash " + GLOBALS.SCRIPT_DIR + filename + " &> ~/install_script_output"
     return populate_config + " && " + run_script
