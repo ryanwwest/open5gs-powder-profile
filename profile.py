@@ -46,9 +46,10 @@ class GLOBALS(object):
 def invoke_script_str(filename):
     # populate script config before running scripts (replace '?'s)
     populate_config = "sed -i 's/NUM_UE_=?/NUM_UE_=" + str(params.uenum) + "/' " + GLOBALS.SCRIPT_DIR+GLOBALS.SCRIPT_CONFIG
+    populate_config2 = "sed -i 's/UERANSIM_BRANCHTAG_=?/UERANSIM_BRANCHTAG_=" + str(params.ueransim_branchtag) + "/' " + GLOBALS.SCRIPT_DIR+GLOBALS.SCRIPT_CONFIG
     # also redirect all output to /script_output
     run_script = "sudo bash " + GLOBALS.SCRIPT_DIR + filename + " &> ~/install_script_output"
-    return populate_config + " && " + run_script
+    return populate_config + " && " + populate_config2 + " && " +  run_script
 
 #
 # This geni-lib script is designed to run in the PhantomNet Portal.
@@ -69,6 +70,9 @@ pc.defineParameter("phystype",  "Optional physical node type",
 
 pc.defineParameter("uenum","Number of simulated UEs to generate and register (0-10)",
                    portal.ParameterType.INTEGER, 1, min=0, max=10)
+
+pc.defineParameter("ueransim_branchtag","Which tag/branch of UERANSIM to install",
+                   portal.ParameterType.STRING, "v3.2.0")
 
 
 # Retrieve the values the user specifies during instantiation.
