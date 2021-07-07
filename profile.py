@@ -97,6 +97,13 @@ open5gs.hardware_type = GLOBALS.HWTYPE if params.phystype != "" else params.phys
 open5gs.addService(rspec.Execute(shell="bash", command=invoke_script_str("open5gs.sh")))
 gNBCoreLink.addNode(open5gs)
 
+mec = request.RawPC("mec")
+mec.component_manager_id = GLOBALS.SITE_URN
+mec.disk_image = GLOBALS.UBUNTU18_IMG
+mec.hardware_type = GLOBALS.HWTYPE if params.phystype != "" else params.phystype
+mec.addService(rspec.Execute(shell="bash", command=invoke_script_str("mec.sh")))
+gNBCoreLink.addNode(mec)
+
 tour = IG.Tour()
 tour.Description(IG.Tour.MARKDOWN, tourDescription)
 tour.Instructions(IG.Tour.MARKDOWN, tourInstructions)
